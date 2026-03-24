@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using GrpcCRUDApplication.Protos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrpcCRUDApplication.Services
 {
@@ -29,6 +30,7 @@ namespace GrpcCRUDApplication.Services
                 throw new RpcException(new Status(StatusCode.NotFound, "No products found!"));
             return Task.FromResult(response)!;
         }
+        [Authorize]
         public override Task<Product> CreateProduct(CreateProductRequest request, ServerCallContext context)
         {
             var product = new Product
@@ -41,6 +43,7 @@ namespace GrpcCRUDApplication.Services
             _products.Add(product);
             return Task.FromResult(product);
         }
+        [Authorize]
         public override Task<Product> UpdateProduct(UpdateProductRequest request, ServerCallContext context)
         {
             var product = _products.FirstOrDefault(p => p.Id == request.Id);
@@ -53,6 +56,7 @@ namespace GrpcCRUDApplication.Services
 
             return Task.FromResult(product);
         }
+        [Authorize]
         public override Task<Empty> DeleteProduct(DeleteProductRequest request, ServerCallContext context)
         {
             var product = _products.FirstOrDefault(p => p.Id == request.Id);
