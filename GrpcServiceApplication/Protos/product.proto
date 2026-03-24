@@ -1,12 +1,12 @@
 syntax = "proto3";
 option csharp_namespace = "GrpcCRUDApplication.Protos";
 
-import "google/protobuf/empty.proto"; // import an empty message.
+import "google/protobuf/empty.proto";
 
-package product; // pacakge name is product.
+import "google/api/annotations.proto";
 
-// Dtos:
-// These numbers are tags that must be unique across a message that used by gRPC to handle the data well.
+package product;
+
 message Product{
 	int32 id = 1; 
 	string name = 2;
@@ -39,11 +39,33 @@ message DeleteProductRequest{
 	int32 id = 1;
 }
 
-// Services:
+
 service ProductProtoService{
-	rpc GetProduct(GetProductRequest) returns(Product);
-	rpc ListProducts(google.protobuf.Empty) returns(ProductListResponse);
-	rpc CreateProduct(CreateProductRequest) returns(Product);
-	rpc UpdateProduct(UpdateProductRequest) returns(Product);
-	rpc DeleteProduct(DeleteProductRequest) returns(google.protobuf.Empty);
+	rpc GetProduct(GetProductRequest) returns(Product){
+		option (google.api.http) = {
+			get: "/product/{id}"
+		};
+	}
+	rpc ListProducts(google.protobuf.Empty) returns(ProductListResponse){
+		option (google.api.http) = {
+			get: "/products"
+		};
+	}
+	rpc CreateProduct(CreateProductRequest) returns(Product){
+		option (google.api.http) = {
+			post: "/product",
+			body: "*"
+		};
+	}
+	rpc UpdateProduct(UpdateProductRequest) returns(Product){
+		option (google.api.http) = {
+			put: "/product/{id}",
+			body: "*"
+		};
+	}
+	rpc DeleteProduct(DeleteProductRequest) returns(google.protobuf.Empty){
+		option (google.api.http) = {
+			delete: "/product/{id}"
+		};
+	}
 }
